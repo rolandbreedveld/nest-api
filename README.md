@@ -37,14 +37,13 @@ to get both values take these steps:   (thanks FilipDem for this info)
 - Several network calls will appear in the Dev Tools window. Click on the last iframe call.
 - In the Headers tab, under Request Headers, copy the entire cookie value (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your $cookies; make sure all of it is on a single line.
 
-
 Create in Domoticz virtual Devices:
 - for Temp     : Temperature LaCross TX3
 - for Hum      : Humidity LaCross TX3
  or if you want a combined virtual device :
 - for TempHum  : Temp+Hum THGN122/123/132
  
-- for SetPoint : Thermostat SetPoint
+- for SetPoint : Thermostat SetPoint # I Named this device Nest, To acticate it easy from my iPhone with Siri
 - for ECO Mode : a regular Light/Switch and change the icon tosomething nice
 - for Away Mode: a regular Light/Switch and change the icon tosomething nice
 - for Heat     : a regular Light/Switch and change the icon tosomething nice
@@ -63,7 +62,7 @@ edit in Domoticz the Away Mode switch:
 - Off Action: script:///usr/bin/php /home/pi/nest-api/unset_nest_away_mode.php
 
 Add dzVents script, see example file : dzVents_script_Nest_Setpoint.txt
-Setpoint device is called "Nest Setpoint", so you perhaps, need to change it.
+Setpoint device is called "Nest", so you perhaps, need to change it.
 
 Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
 - */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1
