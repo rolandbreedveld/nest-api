@@ -16,12 +16,12 @@ scripts are located (in my case) in /home/pi/nest-api/
 
 to install, download the zip, or better use git:
 if you dan't have git, install it first:
-sudo apt install git
-cd /home/pi
-git clone https://github.com/rolandbreedveld/nest-api.git
+- sudo apt install git
+- cd /home/pi
+- git clone https://github.com/rolandbreedveld/nest-api.git
 to update it to the latest version:
-cd /home/pi/nest-api
-git pull
+- cd /home/pi/nest-api
+- git pull
 
 copy nest.auth.php_example to nest.auth.php
 and change the issue-token and cookie in nest.auth.php  
@@ -39,34 +39,34 @@ to get both values take these steps:   (thanks FilipDem for this info)
 
 
 Create in Domoticz virtual Devices:
- for Temp     : Temperature LaCross TX3
- for Hum      : Humidity LaCross TX3
+- for Temp     : Temperature LaCross TX3
+- for Hum      : Humidity LaCross TX3
  or if you want a combined virtual device :
- for TempHum  : Temp+Hum THGN122/123/132
+- for TempHum  : Temp+Hum THGN122/123/132
  
- for SetPoint : Thermostat SetPoint
- for ECO Mode : a regular Light/Switch and change the icon tosomething nice
- for Away Mode: a regular Light/Switch and change the icon tosomething nice
- for Heat     : a regular Light/Switch and change the icon tosomething nice
+- for SetPoint : Thermostat SetPoint
+- for ECO Mode : a regular Light/Switch and change the icon tosomething nice
+- for Away Mode: a regular Light/Switch and change the icon tosomething nice
+- for Heat     : a regular Light/Switch and change the icon tosomething nice
 
- move file nest_devices.cfg-example to nest_devices.cfg
+- move file nest_devices.cfg-example to nest_devices.cfg
  note the idx nrs, as find in the devices tab, and change them below in the nest_devices.cfg file
  Example:   SETPOINT 492   <<< change this as example for the SETPOINT to your idx
  remove or place a # for lines you don't want to use
 
 edit in Domoticz the ECO Mode switch:
-   On  Action: script:///usr/bin/php /home/pi/nest-api/set_nest_eco_mode.php
-   Off Action: script:///usr/bin/php /home/pi/nest-api/unset_nest_eco_mode.php
+- On  Action: script:///usr/bin/php /home/pi/nest-api/set_nest_eco_mode.php
+- Off Action: script:///usr/bin/php /home/pi/nest-api/unset_nest_eco_mode.php
 
 edit in Domoticz the Away Mode switch:
-   On  Action: script:///usr/bin/php /home/pi/nest-api/set_nest_away_mode.php
-   Off Action: script:///usr/bin/php /home/pi/nest-api/unset_nest_away_mode.php
+- On  Action: script:///usr/bin/php /home/pi/nest-api/set_nest_away_mode.php
+- Off Action: script:///usr/bin/php /home/pi/nest-api/unset_nest_away_mode.php
 
 Add dzVents script, see example file : dzVents_script_Nest_Setpoint.txt
 Setpoint device is called "Nest Setpoint", so you perhaps, need to change it.
 
 Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
-*/5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1
+- */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1
 
 if you use a different path, you should change it a some places
 
