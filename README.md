@@ -50,8 +50,8 @@ Create in Domoticz virtual Devices:
 
 - move file nest_devices.cfg-example to nest_devices.cfg
  note the idx nrs, as find in the devices tab, and change them below in the nest_devices.cfg file
- Example:   SETPOINT 492   <<< change this as example for the SETPOINT to your idx
- remove or place a # for lines you don't want to use
+- Example:   SETPOINT 492   <<< change this as example for the SETPOINT to your idx
+- remove or place a # for lines you don't want to use
 
 edit in Domoticz the ECO Mode switch:
 - On  Action: script:///usr/bin/php /home/pi/nest-api/set_nest_eco_mode.php
@@ -62,7 +62,7 @@ edit in Domoticz the Away Mode switch:
 - Off Action: script:///usr/bin/php /home/pi/nest-api/unset_nest_away_mode.php
 
 Add dzVents script, see example file : dzVents_script_Nest_Setpoint.txt
-Setpoint device is called "Nest", so you perhaps, need to change it.
+- Setpoint device is called "Nest", so you perhaps, need to change it.
 
 Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
 - */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1
