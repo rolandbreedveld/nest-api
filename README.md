@@ -63,6 +63,4 @@ Add the following cron-entry, to get every 5 minutes the last values from Google
 if you use a different path, you should change it a some places
 
 succes, Roland@Breedveld.net
-=======================================
-
 
