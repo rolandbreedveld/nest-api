@@ -1,4 +1,4 @@
-Workarround to get Nest Google account working in Domoticz
+api script to get a Nest Google account working in Domoticz
 
 based on : https://github.com/gboudreau/nest-api
 
