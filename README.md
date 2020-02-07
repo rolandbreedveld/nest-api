@@ -13,7 +13,15 @@ Version info:
 - 2020-02-07 V1.05 Heat wasn't updated fixed
 
 scripts are located (in my case) in /home/pi/nest-api/
-follow the readme in the get_nest.sh script
+
+to install, download the zip, or better use git:
+if you dan't have git, install it first:
+sudo apt install git
+cd /home/pi
+git clone https://github.com/rolandbreedveld/nest-api.git
+to update it to the latest version:
+cd /home/pi/nest-api
+git pull
 
 copy nest.auth.php_example to nest.auth.php
 and change the issue-token and cookie in nest.auth.php  
