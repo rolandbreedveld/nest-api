@@ -71,7 +71,7 @@ Add the following cron-entry, to get every 5 minutes the last values from Google
 if you use a different path, you should change it a some places
 
 if Domoticz is running on another server or is using a different port, add this to nest_devices.cfg:
-- DOMOTICZ <server-ip>:<port>
+- DOMOTICZ server-ip:port
 - if empty, the default will be: 127.0.0.1:8080
 
 
