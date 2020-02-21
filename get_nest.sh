@@ -11,11 +11,18 @@
 #                  devices are moved from the script to nest_devices.cfg
 # 2020-01-28 V1.04 add possibility formultisensor Tem+Hum
 # 2020-02-07 V1.05 Heat wasn't updated fixed
+# 2020-02-21 V1.06 domoticz host and port to config file
 # =========================================
 #
 # See README.md for info
 
 cd /home/pi/nest-api
+
+DOMOTICZ=$(grep "^DOMOTICZ " nest_devices.cfg|awk '{print $NF}')
+if [ -z "${DOMOTICZ}" ]
+then
+  export DOMOTICZ="127.0.0.1:8080"
+fi
 
 TARGET_SET=0
 php get_nest.php| while read LINE
@@ -90,42 +97,42 @@ do
   then
     if [ "${TYPE}" == "TEMP" ]
     then
-      curl -X GET "http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}" >/dev/null 2>&1
+      curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}" >/dev/null 2>&1
       echo "Update ${TYPE} to $VALUE"
     fi
     if [ "${TYPE}" == "HUMIDITY" ]
     then
-      curl -X GET "http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=${VALUE}&svalue=0" >/dev/null 2>&1
+      curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=${VALUE}&svalue=0" >/dev/null 2>&1
       echo "Update ${TYPE} to $VALUE"
     fi
     if [ "${TYPE}" == "SETPOINT" ]
     then
-      CURRENT=$(curl -X GET "http://127.0.0.1:8080/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep '"SetPoint" : '|sed 's/\"//g;s/,$//'|awk '{print sprintf("%.1f",$3)}')
+      CURRENT=$(curl -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep '"SetPoint" : '|sed 's/\"//g;s/,$//'|awk '{print sprintf("%.1f",$3)}')
       if [ "${CURRENT}" != "${VALUE}" ]
       then
-        curl -X GET "http://127.0.0.1:8080/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" >/dev/null 2>&1
+        curl -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" >/dev/null 2>&1
         echo "Update ${TYPE} to $VALUE"
       fi
     fi
     if [ "${VALUE}" == "On" ]
     then
-      if curl -X GET "http://127.0.0.1:8080/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep Off >/dev/null 2>&1
+      if curl -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep Off >/dev/null 2>&1
       then
-        curl -X GET "http://127.0.0.1:8080/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" >/dev/null 2>&1
+        curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" >/dev/null 2>&1
         echo "Update ${TYPE} state to ${VALUE}"
       fi
     fi
     if [ "${VALUE}" == "Off" ]
     then
-      if curl -X GET "http://127.0.0.1:8080/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep On >/dev/null 2>&1
+      if curl -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep On >/dev/null 2>&1
       then
-        curl -X GET "http://127.0.0.1:8080/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" >/dev/null 2>&1
+        curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" >/dev/null 2>&1
         echo "Update ${TYPE} state to ${VALUE}"
       fi
     fi
     if [ "${IDX}" == "487"  ]
     then
-        curl -X GET "http://127.0.0.1:8080/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep On
+        curl -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep On
     fi
     if [ ! -z "${TEMPHUM_VALUE}" ]
     then
@@ -133,7 +140,7 @@ do
       IDX=$(grep "^${TYPE} " nest_devices.cfg|awk '{print $NF}')
       if [ ! -z "${IDX}" ]
       then
-        curl -X GET "http://127.0.0.1:8080/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${TEMPHUM_VALUE}" >/dev/null 2>&1
+        curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${TEMPHUM_VALUE}" >/dev/null 2>&1
         echo "Update ${TYPE} to $TEMPHUM_VALUE"
       fi
       TEMPHUM_VALUE=""
