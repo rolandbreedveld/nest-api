@@ -130,10 +130,6 @@ do
         echo "Update ${TYPE} state to ${VALUE}"
       fi
     fi
-    if [ "${IDX}" == "HEAT"  ]
-    then
-        curl -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep On >/dev/null 2>&1
-    fi
     if [ ! -z "${TEMPHUM_VALUE}" ]
     then
       TYPE="TEMPHUM"
