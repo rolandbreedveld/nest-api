@@ -20,7 +20,7 @@ if you dan't have git, install it first:
 - sudo apt install git
 - cd /home/pi
 - git clone https://github.com/rolandbreedveld/nest-api.git
-to update it to the latest version:
+- to update it to the latest version:
 - cd /home/pi/nest-api
 - git pull
 
