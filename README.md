@@ -11,6 +11,7 @@ Version info:
                  delivered as nest_devices.cfg-example, so it won'toverwrite your file.
 - 2020-01-28 V1.04 add possibility formultisensor Tem+Hum
 - 2020-02-07 V1.05 Heat wasn't updated fixed
+- 2020-02-21 V1.06 domoticz host and port to config file
 
 scripts are located (in my case) in /home/pi/nest-api/
 
@@ -68,6 +69,10 @@ Add the following cron-entry, to get every 5 minutes the last values from Google
 - */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1
 
 if you use a different path, you should change it a some places
+
+if Domoticz is running on another server or is usind a different port, add this to nest_devices.cfg:
+- DOMOTICZ 127.0.0.1:8080
+
 
 succes, Roland@Breedveld.net
 
