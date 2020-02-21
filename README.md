@@ -11,7 +11,7 @@ Version info:
                  delivered as nest_devices.cfg-example, so it won'toverwrite your file.
 - 2020-01-28 V1.04 add possibility formultisensor Tem+Hum
 - 2020-02-07 V1.05 Heat wasn't updated fixed
-- 2020-02-21 V1.06 domoticz host and port to config file
+- 2020-02-21 V1.06 Domoticz host and port to config file
 
 scripts are located (in my case) in /home/pi/nest-api/
 
