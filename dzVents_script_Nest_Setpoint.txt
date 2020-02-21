@@ -1,15 +1,15 @@
 -- Nest SetPoint
 -- dzVents script for updatting SetPoint of Nest thermostat with Google account
 -- Roland@Breedveld.net
--- the name of my device is "Nest Setpoint", change it if you like.
+-- the name of my device is "Nest", change it if you likei, on both places.
 return{
          on = {
             devices = {
-               'Nest Setpoint'
+               'Nest'
             }
          },
          execute = function(domoticz, device)
-         local setpoint = tostring(domoticz.devices('Nest Setpoint').setPoint)
+         local setpoint = tostring(domoticz.devices('Nest').setPoint)
          print("Nest Setpoint Called, change SetPoint to :" .. setpoint .. " ...") 
          cmd = "/usr/bin/php /home/pi/nest-api/nest_setpoint.php " .. setpoint
          os.execute(cmd)
