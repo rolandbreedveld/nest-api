@@ -12,6 +12,7 @@ Version info:
 - 2020-01-28 V1.04 add possibility formultisensor Tem+Hum
 - 2020-02-07 V1.05 Heat wasn't updated fixed
 - 2020-02-21 V1.06 Domoticz host and port to config file
+- 2020-02-25 V1.07 change in nest.class.php not auto go to ECO on setting AWAY
 
 scripts are located (in my case) in /home/pi/nest-api/
 

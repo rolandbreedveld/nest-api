@@ -92,7 +92,8 @@ do
       IDX=""
       ;;
   esac
-
+  #echo "==> $LINE"
+  #echo "==> $TYPE $VALUE $IDX"
   if [ ! -z "${IDX}" ]
   then
     if [ "${TYPE}" == "TEMP" ]

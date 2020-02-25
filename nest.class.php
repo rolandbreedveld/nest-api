@@ -742,7 +742,7 @@ class Nest
      *
      * @return stdClass|bool The object returned by the API call, or FALSE on error.
      */
-    public function setAway($away_mode, $serial_number = NULL, $eco_when_away = TRUE) {
+    public function setAway($away_mode, $serial_number = NULL, $eco_when_away = FALSE) {
         $serial_number = $this->getDefaultSerial($serial_number);
         $data = json_encode(array('away' => $away_mode, 'away_timestamp' => time(), 'away_setter' => 0));
         $structure_id = $this->getDeviceInfo($serial_number)->location;
