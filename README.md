@@ -16,6 +16,9 @@ Version info:
 
 scripts are located (in my case) in /home/pi/nest-api/
 
+This script need php, so be shure it's installed:
+- sudo apt install php php-curl php-cli php-common
+
 to install, download the zip, or better use git:
 if you dan't have git, install it first:
 - sudo apt install git
@@ -71,9 +74,16 @@ Add the following cron-entry, to get every 5 minutes the last values from Google
 
 if you use a different path, you should change it a some places
 
-if Domoticz is running on another server or is usind a different port, add this to nest_devices.cfg:
-- DOMOTICZ 127.0.0.1:8080
+if Domoticz is running on another server or is using a different port, add this to nest_devices.cfg:
+- DOMOTICZ server-ip:port
+- if empty, the default will be: 127.0.0.1:8080
 
+This scipt is using cachefiles e.g. /tmp/nest_phpxxxxxx, if you test this schipt with the root user, and Domotics runs as user pi, don'tforget to remove them after testing.
+
+Some people want a different location, you can change the location of these cachefiles in the php-config:
+- /etc/php5/cli/php.ini for command line interface (/etc/php5/apache2/php.ini for use from apache
+- sys_temp_dir = "/tmp" <<< this is the one
+- soap.wsdl_cache_dir="/tmp" <<< better change this one too
 
 succes, Roland@Breedveld.net
 
