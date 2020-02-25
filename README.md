@@ -1,5 +1,7 @@
 api script to get a Nest Google account working in Domoticz
 
+![Image 1](https://github.com/rolandbreedveld/nest-api/blob/master/Nest%20with%20Google%20account.png)
+
 based on : https://github.com/gboudreau/nest-api
 
 Version info:
@@ -43,6 +45,8 @@ to get both values take these steps:   (thanks FilipDem for this info)
 - In the Headers tab, under Request Headers, copy the entire cookie value (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your $cookies; make sure all of it is on a single line.
 
 Create in Domoticz virtual Devices:
+
+![Image 2](https://github.com/rolandbreedveld/nest-api/blob/master/Nest%20Virtual%20Devices.png)
 - for Temp     : Temperature LaCross TX3
 - for Hum      : Humidity LaCross TX3
 
@@ -60,6 +64,8 @@ or if you want the combined virtual device for Tem and Hum :
 - remove or place a # for lines you don't want to use
 
 edit in Domoticz the ECO Mode switch:
+
+![Image 3](https://github.com/rolandbreedveld/nest-api/blob/master/Nest%20ECO%20mode%20activation.png)
 - On  Action: script:///usr/bin/php /home/pi/nest-api/set_nest_eco_mode.php
 - Off Action: script:///usr/bin/php /home/pi/nest-api/unset_nest_eco_mode.php
 
