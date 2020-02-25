@@ -15,6 +15,9 @@ Version info:
 
 scripts are located (in my case) in /home/pi/nest-api/
 
+This script need php, so be shure it's installed:
+- sudo apt install php php-curl php-cli php-common
+
 to install, download the zip, or better use git:
 if you dan't have git, install it first:
 - sudo apt install git
