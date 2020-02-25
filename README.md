@@ -45,7 +45,8 @@ to get both values take these steps:   (thanks FilipDem for this info)
 Create in Domoticz virtual Devices:
 - for Temp     : Temperature LaCross TX3
 - for Hum      : Humidity LaCross TX3
- or if you want a combined virtual device :
+
+or if you want the combined virtual device for Tem and Hum :
 - for TempHum  : Temp+Hum THGN122/123/132
  
 - for SetPoint : Thermostat SetPoint # I Named this device Nest, To acticate it easy from my iPhone with Siri
