@@ -78,7 +78,7 @@ if Domoticz is running on another server or is using a different port, add this 
 - DOMOTICZ server-ip:port
 - if empty, the default will be: 127.0.0.1:8080
 
-This scipt is using cachefiles e.g. /tmp/nest_phpxxxxxx, if you test this schipt with the root user, and Domotics runs as user pi, don'tforget to remove them after testing.
+This scipt is using cachefiles e.g. /tmp/nest_phpxxxxxx, if you test this schipt with the root user, and Domotics runs as user pi, don't forget to remove them after testing. (rm -rf /tmp/nest_php*)
 
 Some people want a different location, you can change the location of these cachefiles in the php-config:
 - /etc/php5/cli/php.ini for command line interface (/etc/php5/apache2/php.ini for use from apache
