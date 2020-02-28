@@ -73,8 +73,10 @@ edit in Domoticz the Away Mode switch:
 - On  Action: script:///usr/bin/php /home/pi/nest-api/set_nest_away_mode.php
 - Off Action: script:///usr/bin/php /home/pi/nest-api/unset_nest_away_mode.php
 
-Add dzVents script, see example file : dzVents_script_Nest_Setpoint.txt
+In the Domoticz event gui, create a new event->dzvents->device
+cut-and-paste the example file in it : dzVents_script_Nest_Setpoint.txt
 - Setpoint device is called "Nest", so you perhaps, need to change it.
+I also use Homebridge/Homekit so I can easy say to my iPhone "Hi Siri, set Nest 20 degrees.
 
 Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
 - */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1
