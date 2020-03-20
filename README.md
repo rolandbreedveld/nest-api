@@ -15,6 +15,8 @@ Version info:
 - 2020-02-07 V1.05 Heat wasn't updated fixed
 - 2020-02-21 V1.06 Domoticz host and port to config file
 - 2020-02-25 V1.07 change in nest.class.php not auto go to ECO on setting AWAY
+- 2020-03-20 V1.07 Option: -d gives debug information
+
 
 scripts are located (in my case) in /home/pi/nest-api/
 
@@ -100,7 +102,9 @@ Some people want a different location, you can change the location of these cach
 - sys_temp_dir = "/tmp" <<< this is the one
 - soap.wsdl_cache_dir="/tmp" <<< better change this one too
 
-Problems to get it working? Try to run the scripts manually: \
+Problems to get it working? Try the debug option and to run the scripts manually: \
+- get_nest.sh -d
+
 Get the values from nest:
 - php get_nest.php  
 
