@@ -100,6 +100,7 @@ Some people want a different location, you can change the location of these cach
 Problems to get it working? Try to run the scripts manually: \
 Get the values from nest:
 - php get_nest.php  
+
 Update a value of a virtual device, say your heat-device is 487:
 - curl -X GET "http://localhost:8080/json.htm?type=command&param=switchlight&idx=487&switchcmd=On"
 
