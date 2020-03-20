@@ -20,7 +20,7 @@ Version info:
 
 scripts are located (in my case) in /home/pi/nest-api/
 
-This script need php, so be shure it's installed:
+This script needs php, so be shure it's installed:
 - sudo apt install php php-curl php-cli php-common
 
 to install, download the zip, or better use git:
@@ -102,13 +102,13 @@ Some people want a different location, you can change the location of these cach
 - sys_temp_dir = "/tmp" <<< this is the one
 - soap.wsdl_cache_dir="/tmp" <<< better change this one too
 
-Problems to get it working? Try the debug option and to run the scripts manually: \
+Problems to get it working? Try the debug option, you can also run the some stuff manually: \
 - get_nest.sh -d
 
-Get the values from nest:
+Get the values from nest via the Google-api:
 - php get_nest.php  
 
-Update a value of a virtual device, say your heat-device is 487:
+Update a value of a virtual device via the Domoticz-api, say your heat-device is 487:
 - curl -X GET "http://localhost:8080/json.htm?type=command&param=switchlight&idx=487&switchcmd=On"
 
 
