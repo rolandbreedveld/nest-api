@@ -90,6 +90,9 @@ if Domoticz is running on another server or is using a different port, add this 
 - DOMOTICZ server-ip:port
 - if empty, the default will be: 127.0.0.1:8080
 
+In Domoticz settings, be shure the api is working, example in "Local Networks (no username/password):":
+- 127.0.0.1;192.168.1.*
+
 This scipt is using cachefiles e.g. /tmp/nest_phpxxxxxx, if you test this schipt with the root user, and Domotics runs as user pi, don't forget to remove them after testing. (rm -rf /tmp/nest_php*)
 
 Some people want a different location, you can change the location of these cachefiles in the php-config:
