@@ -108,43 +108,43 @@ do
       IDX=""
       ;;
   esac
-  print_debug "$LINE"
-  print_debug "TYPE:$TYPE VALUE:$VALUE IDX:$IDX"
+  print_debug "json: $LINE"
+  print_debug "vars: TYPE:$TYPE VALUE:$VALUE IDX:$IDX"
   if [ ! -z "${IDX}" ]
   then
     if [ "${TYPE}" == "TEMP" ]
     then
-      print_debug $(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}" 2>&1)
       echo "Update ${TYPE} to $VALUE"
+      print_debug "$(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}" 2>&1)"
     fi
     if [ "${TYPE}" == "HUMIDITY" ]
     then
-      print_debug $(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=${VALUE}&svalue=0" 2>&1)
       echo "Update ${TYPE} to $VALUE"
+      print_debug "$(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=${VALUE}&svalue=0" 2>&1)"
     fi
     if [ "${TYPE}" == "SETPOINT" ]
     then
       CURRENT=$(curl -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep '"SetPoint" : '|sed 's/\"//g;s/,$//'|awk '{print sprintf("%.1f",$3)}')
       if [ "${CURRENT}" != "${VALUE}" ]
       then
-        print_debug $(curl -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" 2>&1)
         echo "Update ${TYPE} to $VALUE"
+        print_debug "$(curl -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" 2>&1)"
       fi
     fi
     if [ "${VALUE}" == "On" ]
     then
       if curl -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep Off >/dev/null 2>&1
       then
-        print_debug $(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" 2>&1)
         echo "Update ${TYPE} state to ${VALUE}"
+        print_debug "$(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" 2>&1)"
       fi
     fi
     if [ "${VALUE}" == "Off" ]
     then
       if curl -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep On >/dev/null 2>&1
       then
-        print_debug $(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" 2>&1)
         echo "Update ${TYPE} state to ${VALUE}"
+        print_debug "$(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" 2>&1)"
       fi
     fi
     if [ ! -z "${TEMPHUM_VALUE}" ]
@@ -153,8 +153,8 @@ do
       IDX=$(grep "^${TYPE} " nest_devices.cfg|awk '{print $NF}')
       if [ ! -z "${IDX}" ]
       then
-        print_debug $(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${TEMPHUM_VALUE}" 2>&1)
         echo "Update ${TYPE} to $TEMPHUM_VALUE"
+        print_debug "$(curl -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${TEMPHUM_VALUE}" 2>&1)"
       fi
       TEMPHUM_VALUE=""
     fi
