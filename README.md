@@ -7,15 +7,16 @@ based on : https://github.com/gboudreau/nest-api
 Version info:
 - 2020-01-16 V1.01
 - 2020-01-17 V1.02 bugfix idx hardcoded
-- 2020-01-25 V1.03 bugfix and support for Away mode,
-                 nest_auth.php renamed to nest_auth.php-example, so it won't overwrite your file.
-                 devices are moved from the script to nest_devices.cfg, which is 
-                 delivered as nest_devices.cfg-example, so it won'toverwrite your file.
+- 2020-01-25 V1.03 bugfix and support for Away mode, \
+                   nest_auth.php renamed to nest_auth.php-example, so it won't overwrite your file. \
+                   devices are moved from the script to nest_devices.cfg, which is  \
+                   delivered as nest_devices.cfg-example, so it won't overwrite your file.
 - 2020-01-28 V1.04 add possibility formultisensor Tem+Hum
 - 2020-02-07 V1.05 Heat wasn't updated fixed
 - 2020-02-21 V1.06 Domoticz host and port to config file
 - 2020-02-25 V1.07 change in nest.class.php not auto go to ECO on setting AWAY
 - 2020-03-20 V1.07 Option: -d gives debug information
+- 2020-03-20 V1.08 forced curl to use ipv4
 
 
 scripts are located (in my case) in /home/pi/nest-api/
