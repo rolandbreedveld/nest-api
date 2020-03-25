@@ -14,6 +14,8 @@
 # 2020-02-21 V1.06 Domoticz host and port to config file
 # 2020-03-20 V1.07 Option: -d gives debug information
 # 2020-03-20 V1.08 forced curl to use ipv4
+# 2020-03-25 V1.09 Update Setpoint if lastupdate more than 60 minutes, to avoid red-sensor.
+#                  Because the setpoint triggers an event, more frequent updates are not advisable.
 # =========================================
 #
 # See README.md for info
@@ -130,6 +132,15 @@ do
       then
         echo "Update ${TYPE} to $VALUE"
         print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" 2>&1)"
+      else
+        # check last update, to avoid red sensor
+        LASTUPDATE=$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep '"LastUpdate" :'|awk -F\" '{print $4}')
+        print_debug "vars: LASTUPDATE SETPOINT:${LASTUPDATE}"
+        if [ "$(($(date '+%s') - $(date --date="${LASTUPDATE}" +%s)))" -gt "3600" ]
+        then
+          echo "Update ${TYPE} to $VALUE : LastUpdate older then 60 minutes "
+          print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" 2>&1)"
+        fi
       fi
     fi
     if [ "${VALUE}" == "On" ]
