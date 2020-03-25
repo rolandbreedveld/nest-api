@@ -16,7 +16,10 @@ Version info:
 - 2020-02-21 V1.06 Domoticz host and port to config file
 - 2020-02-25 V1.07 change in nest.class.php not auto go to ECO on setting AWAY
 - 2020-03-20 V1.07 Option: -d gives debug information
-- 2020-03-20 V1.08 forced curl to use ipv4
+- 2020-03-20 V1.08 forced curl to use ipv4 \
+- 2020-03-25 V1.09 Update Setpoint if lastupdate more than 60 minutes, to avoid red-sensor. \
+                   Because the setpoint triggers an event, more frequent updates are not advisable.
+
 
 
 scripts are located (in my case) in /home/pi/nest-api/
@@ -45,7 +48,8 @@ to get both values take these steps:   (thanks FilipDem for this info)
 - In the Headers tab, under General, copy the entire Request URL (beginning with https://accounts.google.com, ending with nest.com). This is your $issue_token.
 - In the Filter box, enter oauth2/iframe
 - Several network calls will appear in the Dev Tools window. Click on the last iframe call.
-- In the Headers tab, under Request Headers, copy the entire cookie value (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your $cookies; make sure all of it is on a single line.
+- In the Headers tab, under Request Headers (be shure it's the request header not the other ones!!), copy the entire cookie value (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your $cookies; make sure all of it is on a single line. \
+Be shure, the cookie and token values are placed between '' and the row ends with a ;
 
 Create in Domoticz virtual Devices:
 
@@ -111,6 +115,11 @@ Get the values from nest via the Google-api:
 
 Update a value of a virtual device via the Domoticz-api, say your heat-device is 487:
 - curl -X GET "http://localhost:8080/json.htm?type=command&param=switchlight&idx=487&switchcmd=On"
+
+If you get this error: \
+PHP Fatal error:  Uncaught exception 'UnexpectedValueException' with message 'Response to login request doesn't contain required access token. Response: {"error":"USER_LOGGED_OUT","detail":"No active session found."}' in /home/pi/nest-api/nest.class.php:1100
+
+you have to regenerate the cookie and token again, see steps aboove, for some reason the token and cookie stopped working after running fine for 2 months in my case.
 
 
 succes, Roland@Breedveld.net
