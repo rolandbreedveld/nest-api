@@ -16,7 +16,7 @@ Version info:
 - 2020-02-21 V1.06 Domoticz host and port to config file
 - 2020-02-25 V1.07 change in nest.class.php not auto go to ECO on setting AWAY
 - 2020-03-20 V1.07 Option: -d gives debug information
-- 2020-03-20 V1.08 forced curl to use ipv4 \
+- 2020-03-20 V1.08 forced curl to use ipv4 
 - 2020-03-25 V1.09 Update Setpoint if lastupdate more than 60 minutes, to avoid red-sensor. \
                    Because the setpoint triggers an event, more frequent updates are not advisable.
 
