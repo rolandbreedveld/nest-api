@@ -91,6 +91,10 @@ In the Domoticz config add 127.0.0.* and your ip (or range) to local networks.
 
 Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
 - */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1
+Or if you want la log-file:
+- */5 * * * * /home/pi/nest-api/get_nest.sh >/var/log/nest-api.log 2>&1
+Ofcourse you can doit every minute, but I don't know if Goggle has limitation's how much call's perhour are allowed, so 5 minutes is save I think, also Domoticz stores it's data every 5 minutes, so it only effects the user interface.
+
 
 if you use a different path, you should change it a some places
 
