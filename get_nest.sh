@@ -16,6 +16,7 @@
 # 2020-03-20 V1.08 forced curl to use ipv4
 # 2020-03-25 V1.09 Update Setpoint if lastupdate more than 60 minutes, to avoid red-sensor.
 #                  Because the setpoint triggers an event, more frequent updates are not advisable.
+# 2020-04-01 V1.10 added time-stamp to the output
 # =========================================
 #
 # See README.md for info
@@ -39,8 +40,13 @@ function print_debug ()
 {
   if [ "${DEBUG}" == "1" ]
   then
-    echo "DEBUG: ${*}"
+    echo "$(date "+%Y%m%d %H:%M") DEBUG: ${*}"
   fi
+}
+
+function print_action ()
+{
+  echo "$(date "+%Y%m%d %H:%M") ${*}"
 }
 
 TARGET_SET=0
@@ -117,12 +123,12 @@ do
   then
     if [ "${TYPE}" == "TEMP" ]
     then
-      echo "Update ${TYPE} to $VALUE"
+      print_action "Update ${TYPE} to $VALUE"
       print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}" 2>&1)"
     fi
     if [ "${TYPE}" == "HUMIDITY" ]
     then
-      echo "Update ${TYPE} to $VALUE"
+      print_action "Update ${TYPE} to $VALUE"
       print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=${VALUE}&svalue=0" 2>&1)"
     fi
     if [ "${TYPE}" == "SETPOINT" ]
@@ -130,7 +136,7 @@ do
       CURRENT=$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep '"SetPoint" : '|sed 's/\"//g;s/,$//'|awk '{print sprintf("%.1f",$3)}')
       if [ "${CURRENT}" != "${VALUE}" ]
       then
-        echo "Update ${TYPE} to $VALUE"
+        print_action "Update ${TYPE} to $VALUE"
         print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" 2>&1)"
       else
         # check last update, to avoid red sensor
@@ -138,7 +144,7 @@ do
         print_debug "vars: LASTUPDATE SETPOINT:${LASTUPDATE}"
         if [ "$(($(date '+%s') - $(date --date="${LASTUPDATE}" +%s)))" -gt "3600" ]
         then
-          echo "Update ${TYPE} to $VALUE : LastUpdate older then 60 minutes "
+          print_action "Update ${TYPE} to $VALUE : LastUpdate older then 60 minutes "
           print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" 2>&1)"
         fi
       fi
@@ -147,7 +153,7 @@ do
     then
       if curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep Off >/dev/null 2>&1
       then
-        echo "Update ${TYPE} state to ${VALUE}"
+        print_action "Update ${TYPE} state to ${VALUE}"
         print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" 2>&1)"
       fi
     fi
@@ -155,7 +161,7 @@ do
     then
       if curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep On >/dev/null 2>&1
       then
-        echo "Update ${TYPE} state to ${VALUE}"
+        print_action "Update ${TYPE} state to ${VALUE}"
         print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" 2>&1)"
       fi
     fi
@@ -165,7 +171,7 @@ do
       IDX=$(grep "^${TYPE} " nest_devices.cfg|awk '{print $NF}')
       if [ ! -z "${IDX}" ]
       then
-        echo "Update ${TYPE} to $TEMPHUM_VALUE"
+        print_action "Update ${TYPE} to $TEMPHUM_VALUE"
         print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${TEMPHUM_VALUE}" 2>&1)"
       fi
       TEMPHUM_VALUE=""
