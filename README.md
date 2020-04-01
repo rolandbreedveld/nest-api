@@ -36,9 +36,10 @@ if you dan't have git, install it first:
 - cd /home/pi/nest-api
 - git pull
 
-copy nest.auth.php_example to nest.auth.php
-and change the issue-token and cookie in nest.auth.php  
-to get both values take these steps:   (thanks FilipDem for this info)
+copy nest.auth.php_example to nest.auth.php \
+and change the issue-token and cookie in nest.auth.php   \
+to get both values take these steps:   (thanks FilipDem for this info) \
+READ THESE STEPS CAREFULLY ! 
 - Open a Chrome browser tab in Incognito Mode (or clear your cache).
 - Open Developer Tools (View/Developer/Developer Tools).
 - Click on Network tab. Make sure Preserve Log is checked.
@@ -90,6 +91,10 @@ In the Domoticz config add 127.0.0.* and your ip (or range) to local networks.
 
 Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
 - */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1
+Or if you want la log-file:
+- */5 * * * * /home/pi/nest-api/get_nest.sh >/var/log/nest-api.log 2>&1 \
+Of course you can do it every minute, but I don't know if Google has limitation's how much call's per hour are allowed, 5 minutes is save I think, also Domoticz stores it's data every 5 minutes, so it only effects the user interface.
+
 
 if you use a different path, you should change it a some places
 
