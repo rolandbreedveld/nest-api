@@ -101,13 +101,13 @@ I you are using logging for a longer time you need to avoid the log-file became 
 - create a file: /etc/logrotate.d/nest-api : \
  /var/log/nest-api.log { \
  	weekly \
-	  missingok \
-	  rotate 52 \
-	  compress \
-	  notifempty \
-	  create 640 \
-	  sharedscripts \
- } \
+	missingok \
+	rotate 52 \
+	compress \
+	notifempty \
+	create 640 \
+	sharedscripts \
+ } 
 - If nest-api not is running as root change the create row to: \
   create 640 user-name group-name
 
