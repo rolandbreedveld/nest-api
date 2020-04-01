@@ -105,7 +105,7 @@ I you are using logging for a longer time you need to avoid the log-file became 
 	rotate 52 \
 	compress \
 	notifempty \
-	create 640 \
+	create 640 root root \
 	sharedscripts \
  } 
 - If nest-api not is running as root change the create row to: \
