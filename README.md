@@ -112,8 +112,7 @@ I you are using logging for a longer time you need to avoid the log-file became 
   create 640 user-name group-name
 
 In case you do a 2nd schedule somwhere else, like in the Nest itself, they can conflict with each other when running exactly on the same time. \
-This will result as a 5 minutes toggle of values or states, you can simple solve it to add a little delay in the cron:
-Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
+This will result as a 5 minutes toggle of values or states, you can simple solve it to add a little delay in the cron: \
 - */5 * * * * sleep60;/home/pi/nest-api/get_nest.sh >/dev/null 2>&1 \
 
 If you use a different path, you should change it a some places
