@@ -143,7 +143,7 @@ Update a value of a virtual device via the Domoticz-api, say your heat-device is
 If you get this error: \
 PHP Fatal error:  Uncaught exception 'UnexpectedValueException' with message 'Response to login request doesn't contain required access token. Response: {"error":"USER_LOGGED_OUT","detail":"No active session found."}' in /home/pi/nest-api/nest.class.php:1100
 
-you have to regenerate the cookie and token again, see steps aboove, for some reason the token and cookie stopped working after running fine for 2 months in my case.
+you have to regenerate the cookie and token again, see steps above, for some reason the token and cookie stopped working after running fine for 2 months in my case.
 
 
 succes, Roland@Breedveld.net
