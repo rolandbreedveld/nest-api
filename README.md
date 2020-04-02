@@ -111,8 +111,12 @@ I you are using logging for a longer time you need to avoid the log-file became 
 - If nest-api not is running as root change the create row to: \
   create 640 user-name group-name
 
+In case you do a 2nd schedule somwhere else, like in the Nest itself, they can conflict with each other when running exactly on the same time. \
+This will result as a 5 minutes toggle of values or states, you can simple solve it to add a little delay in the cron:
+Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
+- */5 * * * * sleep60;/home/pi/nest-api/get_nest.sh >/dev/null 2>&1 \
 
-if you use a different path, you should change it a some places
+If you use a different path, you should change it a some places
 
 if Domoticz is running on another server or is using a different port, add this to nest_devices.cfg:
 - DOMOTICZ server-ip:port
