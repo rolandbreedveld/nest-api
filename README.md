@@ -24,7 +24,8 @@ Version info:
 
 
 
-scripts are located (in my case) in /home/pi/nest-api/
+scripts are located (in my case) in /home/pi/nest-api/\
+If you use a different path, you should change it a some places, also every time you pull a new version.
 
 This script needs php, so be shure it's installed:
 - sudo apt install php php-curl php-cli php-common
@@ -97,7 +98,7 @@ Or if you want a log-file:
 - */5 * * * * /home/pi/nest-api/get_nest.sh >/var/log/nest-api.log 2>&1 \
 
 Of course you can do it every minute, but I don't know if Google has limitation's how much call's per hour are allowed, 5 minutes is save I think, also Domoticz stores it's data every 5 minutes, so it only effects the user interface. \
-I you are using logging for a longer time you need to avoid the log-file became to big, by activate log-rotating: \
+I you are using logging for a longer time you need to avoid the log-file became to big, by activate log-rotating: 
 - create a file: /etc/logrotate.d/nest-api : \
  /var/log/nest-api.log { \
  	weekly \
@@ -112,10 +113,9 @@ I you are using logging for a longer time you need to avoid the log-file became 
   create 640 user-name group-name
 
 In case you do a 2nd schedule somwhere else, like in the Nest itself, they can conflict with each other when running exactly on the same time. \
-This will result as a 5 minutes toggle of values or states, you can simple solve it to add a little delay in the cron: \
-- */5 * * * * sleep60;/home/pi/nest-api/get_nest.sh >/dev/null 2>&1 \
+This will result as a 5 minutes toggle of values or states, you can simple solve it to add a little delay in the cron: 
+- */5 * * * * sleep60;/home/pi/nest-api/get_nest.sh >/dev/null 2>&1 
 
-If you use a different path, you should change it a some places
 
 if Domoticz is running on another server or is using a different port, add this to nest_devices.cfg:
 - DOMOTICZ server-ip:port
