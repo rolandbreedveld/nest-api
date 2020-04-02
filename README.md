@@ -93,9 +93,9 @@ In the Domoticz config add 127.0.0.* and your ip (or range) to local networks.
 
 
 Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
-- */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1 \
+- */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1 
 Or if you want a log-file:
-- */5 * * * * /home/pi/nest-api/get_nest.sh >/var/log/nest-api.log 2>&1 \
+- */5 * * * * /home/pi/nest-api/get_nest.sh >/var/log/nest-api.log 2>&1 
 
 Of course you can do it every minute, but I don't know if Google has limitation's how much call's per hour are allowed, 5 minutes is save I think, also Domoticz stores it's data every 5 minutes, so it only effects the user interface. \
 I you are using logging for a longer time you need to avoid the log-file became to big, by activate log-rotating: 
@@ -131,7 +131,7 @@ Some people want a different location, you can change the location of these cach
 - sys_temp_dir = "/tmp" <<< this is the one
 - soap.wsdl_cache_dir="/tmp" <<< better change this one too
 
-Problems to get it working? Try the debug option, you can also run the some stuff manually: \
+Problems to get it working? Try the debug option, you can also run the some stuff manually: 
 - get_nest.sh -d
 
 Get the values from nest via the Google-api:
