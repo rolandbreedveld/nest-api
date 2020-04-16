@@ -115,7 +115,7 @@ I you are using logging for a longer time you need to avoid the log-file became 
 
 In case you do a 2nd schedule somwhere else, like in the Nest itself, they can conflict with each other when running exactly on the same time. \
 This will result as a 5 minutes toggle of values or states, you can simple solve it to add a little delay in the cron: 
-- */5 * * * * sleep60;/home/pi/nest-api/get_nest.sh >/dev/null 2>&1 
+- */5 * * * * sleep 60;/home/pi/nest-api/get_nest.sh >/dev/null 2>&1 
 
 
 if Domoticz is running on another server or is using a different port, add this to nest_devices.cfg:
