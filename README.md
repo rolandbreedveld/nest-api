@@ -26,7 +26,8 @@ Version info:
 
 
 
-scripts are located (in my case) in /home/pi/nest-api/
+scripts are located (in my case) in /home/pi/nest-api/\
+If you use a different path, you should change it a some places, also every time you pull a new version.
 
 This script needs php, so be shure it's installed:
 - sudo apt install php php-curl php-cli php-common
@@ -94,12 +95,13 @@ In the Domoticz config add 127.0.0.* and your ip (or range) to local networks.
 
 
 Add the following cron-entry, to get every 5 minutes the last values from Google: (crontab -e)
-- */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1 \
+- */5 * * * * /home/pi/nest-api/get_nest.sh >/dev/null 2>&1 
+
 Or if you want a log-file:
-- */5 * * * * /home/pi/nest-api/get_nest.sh >/var/log/nest-api.log 2>&1 \
+- */5 * * * * /home/pi/nest-api/get_nest.sh >/var/log/nest-api.log 2>&1 
 
 Of course you can do it every minute, but I don't know if Google has limitation's how much call's per hour are allowed, 5 minutes is save I think, also Domoticz stores it's data every 5 minutes, so it only effects the user interface. \
-I you are using logging for a longer time you need to avoid the log-file became to big, by activate log-rotating: \
+I you are using logging for a longer time you need to avoid the log-file became to big, by activate log-rotating: 
 - create a file: /etc/logrotate.d/nest-api : \
  /var/log/nest-api.log { \
  	weekly \
@@ -113,8 +115,10 @@ I you are using logging for a longer time you need to avoid the log-file became 
 - If nest-api not is running as root change the create row to: \
   create 640 user-name group-name
 
+In case you do a 2nd schedule somwhere else, like in the Nest itself, they can conflict with each other when running exactly on the same time. \
+This will result as a 5 minutes toggle of values or states, you can simple solve it to add a little delay in the cron: 
+- */5 * * * * sleep 60;/home/pi/nest-api/get_nest.sh >/dev/null 2>&1 
 
-if you use a different path, you should change it a some places
 
 if Domoticz is running on another server or is using a different port, add this to nest_devices.cfg:
 - DOMOTICZ server-ip:port
@@ -130,7 +134,7 @@ Some people want a different location, you can change the location of these cach
 - sys_temp_dir = "/tmp" <<< this is the one
 - soap.wsdl_cache_dir="/tmp" <<< better change this one too
 
-Problems to get it working? Try the debug option, you can also run the some stuff manually: \
+Problems to get it working? Try the debug option, you can also run the some stuff manually: 
 - get_nest.sh -d
 
 Get the values from nest via the Google-api:
@@ -142,7 +146,7 @@ Update a value of a virtual device via the Domoticz-api, say your heat-device is
 If you get this error: \
 PHP Fatal error:  Uncaught exception 'UnexpectedValueException' with message 'Response to login request doesn't contain required access token. Response: {"error":"USER_LOGGED_OUT","detail":"No active session found."}' in /home/pi/nest-api/nest.class.php:1100
 
-you have to regenerate the cookie and token again, see steps aboove, for some reason the token and cookie stopped working after running fine for 2 months in my case.
+you have to regenerate the cookie and token again, see steps above, for some reason the token and cookie stopped working after running fine for 2 months in my case.
 
 
 succes, Roland@Breedveld.net
