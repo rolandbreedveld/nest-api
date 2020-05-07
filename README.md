@@ -20,6 +20,8 @@ Version info:
 - 2020-03-25 V1.09 Update Setpoint if lastupdate more than 60 minutes, to avoid red-sensor. \
                    Because the setpoint triggers an event, more frequent updates are not advisable.
 - 2020-04-01 V1.10 added time-stamp to the output
+- 2020-05-06 V1.11 Changed dzvents-example, to avoid setpoint update after activating ECO-mode. \
+                   You have to change this manually in Domoticz!!!
 
 
 

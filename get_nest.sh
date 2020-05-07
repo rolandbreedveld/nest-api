@@ -4,20 +4,6 @@
 # /home/pi/nest-api/get_nest.sh
 # =========================================
 # Roland@Breedveld.net
-# 2020-01-16 V1.01 
-# 2020-01-17 V1.02 bugfix idx hardcoded
-# 2020-01-25 V1.03 bugfix and support for Away mode, 
-#                  nest_auth.php renamed to nest_auth.php-example, so it won't overwrite.
-#                  devices are moved from the script to nest_devices.cfg
-# 2020-01-28 V1.04 add possibility formultisensor Tem+Hum
-# 2020-02-07 V1.05 Heat wasn't updated fixed
-# 2020-02-21 V1.06 Domoticz host and port to config file
-# 2020-03-20 V1.07 Option: -d gives debug information
-# 2020-03-20 V1.08 forced curl to use ipv4
-# 2020-03-25 V1.09 Update Setpoint if lastupdate more than 60 minutes, to avoid red-sensor.
-#                  Because the setpoint triggers an event, more frequent updates are not advisable.
-# 2020-04-01 V1.10 added time-stamp to the output
-# =========================================
 #
 # See README.md for info
 
@@ -40,13 +26,13 @@ function print_debug ()
 {
   if [ "${DEBUG}" == "1" ]
   then
-    echo "$(date "+%Y%m%d %H:%M") DEBUG: ${*}"
+    echo "$(date "+%Y-%m-%d %H:%M") DEBUG: ${*}"
   fi
 }
 
 function print_action ()
 {
-  echo "$(date "+%Y%m%d %H:%M") ${*}"
+  echo "$(date "+%Y-%m-%d %H:%M") ${*}"
 }
 
 TARGET_SET=0

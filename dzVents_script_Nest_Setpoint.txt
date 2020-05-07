@@ -3,16 +3,20 @@
 -- Roland@Breedveld.net
 -- the name of my device is "Nest", change it if you likei, on both places.
 return{
-         on = {
-            devices = {
-               'Nest'
-            }
-         },
-         execute = function(domoticz, device)
-         local setpoint = tostring(domoticz.devices('Nest').setPoint)
-         print("Nest Setpoint Called, change SetPoint to :" .. setpoint .. " ...") 
-         cmd = "/usr/bin/php /home/pi/nest-api/nest_setpoint.php " .. setpoint
-         os.execute(cmd)
+  on = {
+    devices = {
+      'Nest'
+    }
+  },
+  execute = function(domoticz, device)
+  local setpoint = tostring(domoticz.devices('Nest').setPoint)
+  if (domoticz.devices('NestEcoMode').state == 'On') then
+    print("Nest Setpoint not Called because in EcoMode")
+  else
+    print("Nest Setpoint Called, change SetPoint to :" .. setpoint .. " ...") 
+    cmd = "/usr/bin/php /home/pi/nest-api/nest_setpoint.php " .. setpoint
+    print(cmd)
+    os.execute(cmd)
+  end
 end
-
 }
