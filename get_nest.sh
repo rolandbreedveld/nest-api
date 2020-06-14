@@ -64,6 +64,8 @@ do
       IDX=$(grep "^${TYPE} " nest_devices.cfg|awk '{print $NF}')
       # if Multi sensor is used
       TEMPHUM_VALUE="${TEMP};${VALUE};0"
+      TYPE=TEMPHUM
+      IDX=$(grep "^${TYPE} " nest_devices.cfg|awk '{print $NF}')
       ;;
     '"away":')
       TYPE=AWAYMODE
