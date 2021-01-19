@@ -135,7 +135,7 @@ Some people want a different location, you can change the location of these cach
 - soap.wsdl_cache_dir="/tmp" <<< better change this one too
 
 Problems to get it working? Try the debug option, you can also run the some stuff manually: 
-- get_nest.sh -d
+- /home/pi/netst-api/get_nest.sh -d
 
 Get the values from nest via the Google-api:
 - php get_nest.php  
