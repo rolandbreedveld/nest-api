@@ -148,6 +148,8 @@ PHP Fatal error:  Uncaught exception 'UnexpectedValueException' with message 'Re
 
 you have to regenerate the cookie and token again, see steps above, for some reason the token and cookie stopped working after running fine for over 6 months in my case. This can be caused if your api wasn't running for a while, or if Google restarts the api, the token and cookie will be timed-out.
 
+General tip for debugging: if you get a lots of errors, always look at the first one! (The rest is in most cases caused by this, and not important)
+
 
 succes, Roland@Breedveld.net
 
