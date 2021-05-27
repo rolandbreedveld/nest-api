@@ -36,8 +36,14 @@ jlog($protects_serials);
 echo "----------\n\n";
 
 echo "Device information:\n";
-$infos = $nest->getDeviceInfo($devices_serials[0]);
-jlog($infos);
+foreach ($protects_serials as $value) {
+  $infos = $nest->getDeviceInfo($value);
+  jlog($infos);
+}
+foreach ($devices_serials as $value) {
+  $infos = $nest->getDeviceInfo($value);
+  jlog($infos);
+}
 echo "----------\n\n";
 
 echo "Current temperature:\n";
