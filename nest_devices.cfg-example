@@ -7,4 +7,8 @@ AWAYMODE 510
 ECOMODE  491
 HEAT     487
 TEMPHUM  511
+COSTAT_<Serial number Nest Protect 1> 83
+SMOKSTAT_<Serial number Nest Protect 1> 82
+COSTAT_<Serial number Nest Protect 2> 210
+SMOKSTAT_<Serial number Nest Protect 2> 209
 DOMOTICZ 127.0.0.1:8080
