@@ -146,7 +146,7 @@ do
     if [ "${TYPE}" == "SMOKSTAT" ]
     then
       print_action "Update ${TYPE} to $VALUE"
-      print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?    type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}" 2>&1)"
+      print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}" 2>&1)"
 
       print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=addlogmessage&message=${IDX}|${TYPE}|${VALUE}&level=2" 2>&1)"
 
