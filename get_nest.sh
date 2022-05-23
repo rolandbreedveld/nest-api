@@ -44,7 +44,7 @@ do
     VALUE="$(echo ${VALUE}|awk '{print sprintf("%.1f",$1)}')"
   fi
   case "$(echo ${LINE}|awk '{print $1}')" in
-     ‘”device_id”:’)
+     '"device_id":')
      # added to address multiple Nest Protects
       DEVICE_ID=${VALUE}
      ;;
@@ -89,34 +89,34 @@ do
         VALUE="Off"
       fi
       ;;
-    ‘”smoke_status”:’)
+    '"smoke_status":')
       TYPE=SMOKSTAT_$DEVICE_ID
-      IDX=$(grep “^${TYPE} ” nest_devices.cfg|awk ‘{print $NF}’)
-      if [ “${VALUE}” == “OK” ]
+      IDX=$(grep "^${TYPE} " nest_devices.cfg|awk '{print $NF}')
+      if [ "${VALUE}" == "OK" ]
       then
-        VALUE=”OK”
-      elif [ “${VALUE}” == “WARNING” ]
+        VALUE="OK"
+      elif [ "${VALUE}" == "WARNING" ]
       then
-        VALUE=”WARNING”
-      elif [ “${VALUE}” == “EMERGENCY” ]
+        VALUE="WARNING"
+      elif [ "${VALUE}" == "EMERGENCY" ]
       then
-        VALUE-“EMERGENCY”
+        VALUE-"EMERGENCY"
       fi
 
       TYPE=SMOKSTAT
       ;;
-    ‘”co_status”:’)
+    '"co_status":')
       TYPE=COSTAT_$DEVICE_ID
-      IDX=$(grep “^${TYPE} ” nest_devices.cfg|awk ‘{print $NF}’)
-      if [ “${VALUE}” == “OK” ]
+      IDX=$(grep "^${TYPE} " nest_devices.cfg|awk '{print $NF}')
+      if [ "${VALUE}" == "OK" ]
       then
-        VALUE=”OK”
-      elif [ “${VALUE}” == “WARNING” ]
+        VALUE="OK"
+      elif [ "${VALUE}" == "WARNING" ]
       then
-        VALUE=”WARNING”
-      elif [ “${VALUE}” == “EMERGENCY” ]
+        VALUE="WARNING"
+      elif [ "${VALUE}" == "EMERGENCY" ]
       then
-        VALUE-“EMERGENCY”
+        VALUE-"EMERGENCY"
       fi
 
       TYPE=COSTAT
@@ -143,20 +143,20 @@ do
   print_debug "vars: TYPE:$TYPE VALUE:$VALUE IDX:$IDX"
   if [ ! -z "${IDX}" ]
   then
-    if [ “${TYPE}” == “SMOKSTAT” ]
+    if [ "${TYPE}" == "SMOKSTAT" ]
     then
-      print_action “Update ${TYPE} to $VALUE”
-      print_debug “$(curl -4 -X GET “http://${DOMOTICZ}/json.htm?    type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}” 2>&1)”
+      print_action "Update ${TYPE} to $VALUE"
+      print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?    type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}" 2>&1)"
 
-      print_debug “$(curl -4 -X GET “http://${DOMOTICZ}/json.htm?type=command&param=addlogmessage&message=${IDX}|${TYPE}|${VALUE}&level=2″ 2>&1)”
+      print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=addlogmessage&message=${IDX}|${TYPE}|${VALUE}&level=2" 2>&1)"
 
     fi
-    if [ “${TYPE}” == “COSTAT” ]
+    if [ "${TYPE}" == "COSTAT" ]
     then
-      print_action “Update ${TYPE} to $VALUE”
-      print_debug “$(curl -4 -X GET “http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}” 2>&1)”
+      print_action "Update ${TYPE} to $VALUE"
+      print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${VALUE}" 2>&1)"
 
-      print_debug “$(curl -4 -X GET “http://${DOMOTICZ}/json.htm?type=command&param=addlogmessage&message=${IDX}|${TYPE}|${VALUE}&level=2″ 2>&1)”
+      print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=addlogmessage&message=${IDX}|${TYPE}|${VALUE}&level=2" 2>&1)"
 
     fi
     if [ "${TYPE}" == "TEMP" ]
