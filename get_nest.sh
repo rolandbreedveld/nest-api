@@ -94,13 +94,13 @@ do
       IDX=$(grep "^${TYPE} " nest_devices.cfg|awk '{print $NF}')
       if [ "${VALUE}" == "OK" ]
       then
-        VALUE="OK"
+        VALUE="0"
       elif [ "${VALUE}" == "WARNING" ]
       then
-        VALUE="WARNING"
+        VALUE="10"
       elif [ "${VALUE}" == "EMERGENCY" ]
       then
-        VALUE-"EMERGENCY"
+        VALUE="20"
       fi
 
       TYPE=SMOKSTAT
@@ -110,13 +110,13 @@ do
       IDX=$(grep "^${TYPE} " nest_devices.cfg|awk '{print $NF}')
       if [ "${VALUE}" == "OK" ]
       then
-        VALUE="OK"
+        VALUE="0"
       elif [ "${VALUE}" == "WARNING" ]
       then
-        VALUE="WARNING"
+        VALUE="10"
       elif [ "${VALUE}" == "EMERGENCY" ]
       then
-        VALUE-"EMERGENCY"
+        VALUE="20"
       fi
 
       TYPE=COSTAT
