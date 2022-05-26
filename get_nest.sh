@@ -39,8 +39,9 @@ TARGET_SET=0
 php get_nest.php| while read LINE
 do
   VALUE="$(echo ${LINE}|awk '{print $2}'|sed 's/,$//;s/\"//g')"
-  if [ ! -z "$(echo ${VALUE}|grep [0-9])" ]
-  then
+  
+  NUMERIC_REGEX='^[+-]?[0-9]+([.][0-9]+)?$'
+  if [[ $VALUE =~ $NUMERIC_REGEX ]] ; then
     VALUE="$(echo ${VALUE}|awk '{print sprintf("%.1f",$1)}')"
   fi
   case "$(echo ${LINE}|awk '{print $1}')" in
