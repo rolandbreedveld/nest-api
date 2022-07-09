@@ -16,7 +16,8 @@ date_default_timezone_set('Europe/Amsterdam');
 // $nest = new Nest($username, $password);
 
 // Or use a Google account (see instructions below on how to find those values):
-$nest = new Nest(NULL, NULL, $issue_token, $cookies);
+#$nest = new Nest(NULL, NULL, $issue_token, $cookies);
+$nest = new Nest($username, $password, $issue_token, $cookies);
 
 
 
