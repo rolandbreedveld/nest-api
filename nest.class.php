@@ -303,6 +303,7 @@ class Nest
             if ($serial_number == $protect->serial_number) {
                 // The specified device is a Nest Protect
                 $infos = (object) array(
+                    'device_id' => $serial_number,
                     'co_status' => $protect->co_status == 0 ? "OK" : $protect->co_status,
                     'co_previous_peak' => isset($protect->co_previous_peak) ? $protect->co_previous_peak : NULL,
                     'co_sequence_number' => $protect->co_sequence_number,

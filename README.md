@@ -23,7 +23,7 @@ Version info:
 - 2020-05-06 V1.11 Changed dzvents-example, to avoid setpoint update after activating ECO-mode. \
                    You have to change this manually in Domoticz!!!
 - 2022-07-09 V1.12 Add comment for getting token \
-                   updated class-file fromgboudreau
+                   updated class-file from gboudreau
 
 
 
@@ -50,6 +50,7 @@ READ THESE STEPS CAREFULLY !
 - Open a Chrome browser tab in Incognito Mode (or clear your cache).
 - Open Developer Tools (View/Developer/Developer Tools).
 - Click on Network tab. Make sure Preserve Log is checked.
+
 - In the Filter box, enter issueToken
 - Go to https://home.nest.com, and click Sign in with Google. Log into your account.
 - One network call (beginning with iframerpc) will appear in the Dev Tools window. Click on it.
@@ -58,6 +59,7 @@ READ THESE STEPS CAREFULLY !
 - In the Filter box, enter oauth2/iframe
 - Several network calls will appear in the Dev Tools window. Click on the last iframe call.
 - In the Headers tab, under Request Headers (be shure it's the request header not the other ones!!), copy the entire cookie value (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your $cookies; make sure all of it is on a single line. \
+
 Be shure, the cookie and token values are placed between '' and the row ends with a ;
 
 Create in Domoticz virtual Devices:
@@ -150,6 +152,8 @@ If you get this error: \
 PHP Fatal error:  Uncaught exception 'UnexpectedValueException' with message 'Response to login request doesn't contain required access token. Response: {"error":"USER_LOGGED_OUT","detail":"No active session found."}' in /home/pi/nest-api/nest.class.php:1100
 
 you have to regenerate the cookie and token again, see steps above, for some reason the token and cookie stopped working after running fine for over 6 months in my case. This can be caused if your api wasn't running for a while, or if Google restarts the api, the token and cookie will be timed-out.
+
+General tip for debugging: if you get a lots of errors, always look at the first one! (The rest is in most cases caused by this, and not important)
 
 
 succes, Roland@Breedveld.net
