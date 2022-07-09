@@ -2,6 +2,7 @@
 
 defined('DATE_FORMAT') OR define('DATE_FORMAT', 'Y-m-d');
 defined('DATETIME_FORMAT') OR define('DATETIME_FORMAT', DATE_FORMAT . ' H:i:s');
+defined('USE_STATUS_BUCKETS') OR define('USE_STATUS_BUCKETS', FALSE);
 define('TARGET_TEMP_MODE_COOL', 'cool');
 define('TARGET_TEMP_MODE_HEAT', 'heat');
 define('TARGET_TEMP_MODE_RANGE', 'range');
@@ -35,7 +36,6 @@ define('DEVICE_TYPE_THERMOSTAT', 'thermostat');
 define('DEVICE_TYPE_PROTECT', 'protect');
 define('DEVICE_TYPE_SENSOR', 'sensor');
 
-define('NESTAPI_DEVICE_TYPE_SENSOR', 'kryptonite.');
 define('NESTAPI_ERROR_UNDER_MAINTENANCE', 1000);
 define('NESTAPI_ERROR_EMPTY_RESPONSE', 1001);
 define('NESTAPI_ERROR_NOT_JSON_RESPONSE', 1002);
@@ -83,10 +83,10 @@ class Nest
      */
     public function __construct($username = NULL, $password = NULL, $issue_token = NULL, $cookies = NULL) {
         if ($issue_token === NULL && defined('ISSUE_TOKEN')) {
-            $issue_token = ISSUE_TOKEN;
+            $issue_token = constant('ISSUE_TOKEN');
         }
         if ($cookies === NULL && defined('COOKIES')) {
-            $cookies = COOKIES;
+            $cookies = constant('COOKIES');
         }
         if (!empty($issue_token)) {
             $this->issue_token = $issue_token;
@@ -95,14 +95,14 @@ class Nest
             }
             $this->cookies = $cookies;
 
-            $this->cookie_file = sys_get_temp_dir() . '/nest_php_cookies_' . md5($this->issue_token);
-            $this->cache_file = sys_get_temp_dir() . '/nest_php_cache_' . md5($this->issue_token);
+            $this->cookie_file = static::getTempFile('cookies', md5($this->issue_token));
+            $this->cache_file = static::getTempFile('cache', md5($this->issue_token));
         } else {
             if ($username === NULL && defined('USERNAME')) {
-                $username = USERNAME;
+                $username = constant('USERNAME');
             }
             if ($password === NULL && defined('PASSWORD')) {
-                $password = PASSWORD;
+                $password = constant('PASSWORD');
             }
             if ($username === NULL || $password === NULL) {
                 throw new InvalidArgumentException('Nest credentials were not provided.');
@@ -110,8 +110,8 @@ class Nest
             $this->username = $username;
             $this->password = $password;
 
-            $this->cookie_file = sys_get_temp_dir() . '/nest_php_cookies_' . md5($username . $password);
-            $this->cache_file = sys_get_temp_dir() . '/nest_php_cache_' . md5($username . $password);
+            $this->cookie_file = static::getTempFile('cookies', md5($username . $password));
+            $this->cache_file = static::getTempFile('cache', md5($username . $password));
         }
 
         static::secureTouch($this->cookie_file);
@@ -122,6 +122,21 @@ class Nest
 
         // Log in, if needed
         $this->login();
+    }
+
+    protected static function getTempFile($type, $suffix) {
+        $file = sys_get_temp_dir() . "/nest_php_{$type}_{$suffix}";
+        if (!is_file($file) || !is_writable($file)) {
+            if (function_exists('posix_geteuid')) {
+                // Use the posix function if available. This requires php-posix or php-process package
+                $u = posix_getpwuid(posix_geteuid());
+                $unix_user = $u['name'];
+            } else {
+                $unix_user = get_current_user();
+            }
+            $file = sys_get_temp_dir() . "/nest_php_{$type}_{$unix_user}_{$suffix}";
+        }
+        return $file;
     }
 
     /**
@@ -211,6 +226,7 @@ class Nest
      * @return array Returns as array, one element for each day of the week for which there has at least one scheduled event.
      *               Array keys are a textual representation of a day, three letters, as returned by `date('D')`.
      *               Array values are arrays of scheduled temperatures, including a time (in minutes after midnight),
+     *               invoke_timestamp of when the event would be activated,
      *               and a mode (one of the TARGET_TEMP_MODE_* defines).
      */
     public function getDeviceSchedule($serial_number = NULL) {
@@ -223,8 +239,10 @@ class Nest
             $events = array();
             foreach ($scheduled_events as $scheduled_event) {
                 if ($scheduled_event->entry_type == 'setpoint') {
+                    $invoke_at = strtotime("{$this->days_maps[(int) $day]} 0:00:00") + $scheduled_event->time;
                     $events[(int)$scheduled_event->time] = (object) array(
                         'time' => $scheduled_event->time/60, // in minutes
+                        'invoke_timestamp' => ($invoke_at >= time()) ? $invoke_at : strtotime("+7 days", $invoke_at),
                         'target_temperature' => $scheduled_event->type == 'RANGE' ? array($this->temperatureInUserScale((float)$scheduled_event->{'temp-min'}), $this->temperatureInUserScale((float)$scheduled_event->{'temp-max'})) : $this->temperatureInUserScale((float) $scheduled_event->temp),
                         'mode' => $scheduled_event->type == 'HEAT' ? TARGET_TEMP_MODE_HEAT : ($scheduled_event->type == 'COOL' ? TARGET_TEMP_MODE_COOL : TARGET_TEMP_MODE_RANGE)
                     );
@@ -347,6 +365,7 @@ class Nest
                     'last_status'           => date(DATETIME_FORMAT, $sensor->last_updated_at),
                     'location'              => $sensor->structure_id,
                     'where'                 => $this->getWhereById($sensor->where_id),
+                    'serial_number'         => $sensor_serial,
                 );
                 return $infos;
             }
@@ -406,8 +425,7 @@ class Nest
         //Process sensors associated to this thermostat
         $sensors = (object)array('all' => array(), 'active' => array(), 'active_temperatures' => array());
         foreach ($this->last_status->rcs_settings->{$serial_number}->associated_rcs_sensors as $sensor_serial) {
-            $sensor_parsed_serial_number = str_replace(NESTAPI_DEVICE_TYPE_SENSOR, '', $sensor_serial);
-            $current_sensor = $this->getDeviceInfo($sensor_parsed_serial_number);
+            $current_sensor = $this->getDeviceInfo(self::cleanDevices($sensor_serial));
             $current_sensor->is_active = in_array($sensor_serial, $this->last_status->rcs_settings->{$serial_number}->active_rcs_sensors);
             if ($current_sensor->is_active) {
                 $sensors->active[] = $current_sensor;
@@ -424,7 +442,6 @@ class Nest
                 'ac' => $this->last_status->shared->{$serial_number}->hvac_ac_state,
                 'heat' => $this->last_status->shared->{$serial_number}->hvac_heater_state,
                 'alt_heat' => $this->last_status->shared->{$serial_number}->hvac_alt_heat_state,
-                'fan' => $this->last_status->shared->{$serial_number}->hvac_fan_state,
                 'hot_water' => isset($this->last_status->device->{$serial_number}->has_hot_water_control) ? $this->last_status->device->{$serial_number}->hot_water_active : NULL,
                 'auto_away' => $this->last_status->shared->{$serial_number}->auto_away, // -1 when disabled, 0 when enabled (thermostat can set auto-away), >0 when enabled and active (thermostat is currently in auto-away mode)
                 'manual_away' => $structure_away, //Leaving this for others - but manual away really doesn't exist anymore and should be removed eventually
@@ -453,6 +470,10 @@ class Nest
                     'low' => ($this->last_status->device->{$serial_number}->away_temperature_low_enabled) ? $this->temperatureInUserScale((float)$this->last_status->device->{$serial_number}->away_temperature_low) : FALSE,
                     'high' => ($this->last_status->device->{$serial_number}->away_temperature_high_enabled) ? $this->temperatureInUserScale((float)$this->last_status->device->{$serial_number}->away_temperature_high) : FALSE,
                 ),
+                'safety_temperatures' => (object) array(
+                    'low' => ($this->last_status->device->{$serial_number}->lower_safety_temp_enabled) ? $this->temperatureInUserScale((float)$this->last_status->device->{$serial_number}->lower_safety_temp) : FALSE,
+                    'high' => ($this->last_status->device->{$serial_number}->upper_safety_temp_enabled) ? $this->temperatureInUserScale((float)$this->last_status->device->{$serial_number}->upper_safety_temp) : FALSE,
+                ),
             ),
             'target' => (object) array(
                 'mode' => $target_mode,
@@ -473,6 +494,44 @@ class Nest
             $infos->current_state->humidifier = $this->last_status->device->{$serial_number}->humidifier_state;
             $infos->target->humidity = $this->last_status->device->{$serial_number}->target_humidity;
             $infos->target->humidity_enabled = $this->last_status->device->{$serial_number}->target_humidity_enabled;
+        }
+        if ($this->last_status->device->{$serial_number}->has_fan) {
+            //Retained the 'fan' attribute for LTS
+            $infos->current_state->fan = $this->last_status->shared->{$serial_number}->hvac_fan_state;
+            $infos->current_state->fan_info = (object) array(
+                'is_active' => $this->last_status->shared->{$serial_number}->hvac_fan_state,
+                'mode' => $this->last_status->device->{$serial_number}->fan_mode,
+                'current_speed' => $this->last_status->device->{$serial_number}->fan_current_speed,
+                'duty_cycle' => $this->last_status->device->{$serial_number}->fan_duty_cycle, //Run time per hour (in seconds)
+                //Seconds since midnight
+                'duty_start_time' => $this->last_status->device->{$serial_number}->fan_duty_start_time,
+                'duty_end_time' => $this->last_status->device->{$serial_number}->fan_duty_end_time,
+                //Seconds remaining
+                'timer_timeout' => $this->last_status->device->{$serial_number}->fan_timer_timeout > 0 ? $this->last_status->device->{$serial_number}->fan_timer_timeout - time() : false,
+            );
+        }
+        if (isset($this->last_status->demand_response->{$serial_number}->active_events)) {
+            $infos->demand_response = (object)array(
+                'has_active_event' => false,
+                'has_active_peak_period' => false,
+                'has_user_opted_out' => false,
+                'events' => $this->last_status->demand_response->{$serial_number}->active_events,
+            );
+            foreach ($infos->demand_response->events as &$event) {
+                $event = $this->getDemandResponseEventDetails($event->id);
+
+                $is_event_active = $event->start_time_utc <= time() && time() < $event->stop_time_utc;
+                $infos->demand_response->has_active_event = $infos->demand_response->has_active_event || $is_event_active;
+                $infos->demand_response->has_active_peak_period = $infos->demand_response->has_active_peak_period || $event->in_peak_period;
+
+                if ($event->in_peak_period || $is_event_active) {
+                    $infos->demand_response->has_user_opted_out = $event->user_opted_out;
+                }
+
+                //Set these additional properties for non-breaking changes
+                $event->is_peak_period_active = $event->in_peak_period;
+                $event->is_event_active = $is_event_active;
+            }
         }
 
         return $infos;
@@ -570,6 +629,63 @@ class Nest
     }
 
     /**
+     * Change the thermostat target temperature device
+     *
+     * @param string $sensor_serial_number The thermostat or thermostat sensor serial number to use for target temperature
+     * @param string $thermostat_serial_number The thermostat serial number. Defaults to the first device of the account.
+     *
+     * @return stdClass|bool The object returned by the API call, or FALSE on error.
+     */
+    public function setTargetTemperatureSensor($sensor_serial_number, $thermostat_serial_number = NULL) {
+        $thermostat_serial_number = $this->getDefaultSerial($thermostat_serial_number);
+        $payload = array(
+            'objects' => array(
+                array(
+                    'object_key' => "rcs_settings.$thermostat_serial_number",
+                    'op' => 'MERGE',
+                    'value' => array(
+                        'active_rcs_sensors' => array(),
+                        'rcs_control_setting' => 'OFF',
+                    ),
+                ),
+            )
+        );
+
+        if ($thermostat_serial_number !== $sensor_serial_number) {
+            $payload['objects'][0]['value'] = array(
+                'active_rcs_sensors' => array("kryptonite.$sensor_serial_number"),
+                'rcs_control_setting' => 'OVERRIDE',
+            );
+        }
+        return $this->doPOST('/v5/put', json_encode($payload));
+    }
+
+    /**
+     * Get demand response event details
+     *
+     * @param string $event_id The Nest demand response event id
+     *
+     * @return stdClass|bool The event detail object returned by the API call, or FALSE on error.
+     */
+    protected function getDemandResponseEventDetails($event_id) {
+        $payload = array(
+            'objects' => array(
+                array('object_key' => $event_id)
+            )
+        );
+
+        $event_response = $this->doPOST('/v5/subscribe', json_encode($payload));
+        if (empty($event_response->objects)) {
+            return $event_response;
+         }
+
+         $event_detail = $event_response->objects[0]->value;
+         //Note: cruise_control_temperature is 0/32 until the event is active
+         $event_detail->cruise_control_temperature = $this->temperatureInUserScale($event_detail->cruise_control_temperature);
+         return $event_detail;
+    }
+
+    /**
      * Set the thermostat to use ECO mode ($mode = ECO_MODE_MANUAL) or not ($mode = ECO_MODE_SCHEDULE).
      *
      * @param string $mode          One of the ECO_MODE_* constants.
@@ -628,6 +744,36 @@ class Nest
         } elseif ($temp_high != NULL) {
             $data['away_temperature_high_enabled'] = TRUE;
             $data['away_temperature_high'] = $temp_high;
+        }
+        $data = json_encode($data);
+        return $this->doPOST("/v2/put/device." . $serial_number, $data);
+    }
+
+    /**
+     * Change the thermostat safety temperatures.
+     *
+     * @param float|bool $temp_low      Safety low temperature. Use FALSE to turn it Off (not recommended)
+     * @param float|bool $temp_high     Safety high temperature. Use FALSE to turn it Off (not recommended)
+     * @param string     $serial_number The thermostat serial number. Defaults to the first device of the account.
+     *
+     * @return stdClass|bool The object returned by the API call, or FALSE on error.
+     */
+    public function setSafetyTemperatures($temp_low, $temp_high, $serial_number = NULL) {
+        $serial_number = $this->getDefaultSerial($serial_number);
+        $temp_low = $this->temperatureInCelsius($temp_low, $serial_number);
+        $temp_high = $this->temperatureInCelsius($temp_high, $serial_number);
+        $data = array();
+        if ($temp_low === FALSE) {
+            $data['lower_safety_temp_enabled'] = FALSE;
+        } elseif ($temp_low != NULL) {
+            $data['lower_safety_temp_enabled'] = TRUE;
+            $data['lower_safety_temp'] = $temp_low;
+        }
+        if ($temp_high === FALSE) {
+            $data['upper_safety_temp_enabled'] = FALSE;
+        } elseif ($temp_high != NULL) {
+            $data['upper_safety_temp_enabled'] = TRUE;
+            $data['upper_safety_temp'] = $temp_high;
         }
         $data = json_encode($data);
         return $this->doPOST("/v2/put/device." . $serial_number, $data);
@@ -742,7 +888,7 @@ class Nest
      *
      * @return stdClass|bool The object returned by the API call, or FALSE on error.
      */
-    public function setAway($away_mode, $serial_number = NULL, $eco_when_away = FALSE) {
+    public function setAway($away_mode, $serial_number = NULL, $eco_when_away = TRUE) {
         $serial_number = $this->getDefaultSerial($serial_number);
         $data = json_encode(array('away' => $away_mode, 'away_timestamp' => time(), 'away_setter' => 0));
         $structure_id = $this->getDeviceInfo($serial_number)->location;
@@ -886,23 +1032,20 @@ class Nest
      */
     public function getDevices($type = DEVICE_TYPE_THERMOSTAT) {
         $this->prepareForGet();
+        $devices_serials = array();
         if ($type == DEVICE_TYPE_PROTECT) {
-            $protects = array();
             $topaz = isset($this->last_status->topaz) ? $this->last_status->topaz : array();
             foreach ($topaz as $protect) {
-                $protects[] = $protect->serial_number;
+                $devices_serials[] = $protect->serial_number;
             }
-            return $protects;
+            return $devices_serials;
         }
-        elseif ($type == DEVICE_TYPE_SENSOR) {
+        if ($type == DEVICE_TYPE_SENSOR) {
             return isset($this->last_status->kryptonite) ? array_keys(get_object_vars($this->last_status->kryptonite)) : array();
         }
-        $devices_serials = array();
-        foreach ($this->last_status->user->{$this->userid}->structures as $structure) {
-            list(, $structure_id) = explode('.', $structure);
-            foreach ($this->last_status->structure->{$structure_id}->devices as $device) {
-                list(, $device_serial) = explode('.', $device);
-                $devices_serials[] = $device_serial;
+        foreach ($this->last_status->structure as $structure) {
+            foreach ($structure->devices as $device) {
+                $devices_serials[] = self::cleanDevices($device);
             }
         }
         return $devices_serials;
@@ -1006,8 +1149,8 @@ class Nest
         unset($this->last_status);
     }
 
-    /**
-     * Load all status information from server.
+        /**
+     * Abstraction function to load all status information from server. Calls getStatusUserBuckets or getStatusMobileUser to obtain data
      *
      * @param boolean $retry If needed, rety loading the status from the server a second time.
      *
@@ -1016,6 +1159,22 @@ class Nest
      * @throws RuntimeException
      */
     public function getStatus($retry = TRUE) {
+        $status = USE_STATUS_BUCKETS ? $this->getStatusUserBuckets() : $this->getStatusMobileUser($retry);
+        $this->last_status = $status;
+        $this->saveCache();
+        return $status;
+    }
+
+    /**
+     * Load all status information from server.
+     *
+     * @param boolean $retry If needed, retry loading the status from the server a second time.
+     *
+     * @return \stdClass
+     *
+     * @throws RuntimeException
+     */
+    protected function getStatusMobileUser($retry = TRUE) {
         $url = "/v3/mobile/" . $this->user;
         $status = $this->doGET($url);
         if (!is_object($status)) {
@@ -1026,12 +1185,48 @@ class Nest
                 @unlink($this->cookie_file);
                 @unlink($this->cache_file);
                 $this->login();
-                return $this->getStatus(FALSE);
+                return $this->getStatusMobileUser(FALSE);
             }
             throw new RuntimeException("Error: HTTP request to $url returned cmd = REINIT_STATE. Retrying failed.");
         }
-        $this->last_status = $status;
-        $this->saveCache();
+        return $status;
+    }
+
+    /**
+     * Load all status information from server by utilizing app launch buckets.  Responses are similar to getStatusMobileUser function, but improves support for nonowner devices
+     *
+     * @return \stdClass
+     *
+     * @throws RuntimeException
+     */
+    protected function getStatusUserBuckets() {
+        $params = array(
+            'known_bucket_types' => array("buckets", "delayed_topaz", "demand_response", "device", "device_alert_dialog", "geofence_info", "kryptonite", "link", "message", "message_center", "metadata", "occupancy", "quartz", "safety", "rcs_settings", "safety_summary", "schedule", "shared", "structure", "structure_history", "structure_metadata", "topaz", "topaz_resource", "track", "trip", "tuneups", "user", "user_alert_dialog", "user_settings", "where", "widget_track"),
+            'known_bucket_versions' => array(),
+        );
+        $result = $this->doPOST("https://home.nest.com/api/0.1/user/{$this->userid}/app_launch", json_encode($params), array('Content-type: text/json'));
+
+        if (!is_object($result) || !is_array($result->updated_buckets)) {
+            throw new RuntimeException("Error: Couldn't get status from NEST API: $result");
+        }
+
+        $status = (object)array();
+        foreach ($result->updated_buckets as $bucket) {
+            list($category, $property) = explode('.', $bucket->object_key);
+            if (is_null($category) || is_null($property) || !isset($bucket->value)) {
+                continue;
+            }
+            if (!isset($status->{$category})) {
+                $status->{$category} = (object)array();
+            }
+            $status->{$category}->{$property} = $bucket->value;
+        }
+
+        //Topaz timestamp is in widget track, also place it to in the protect object for backwards compatibility
+        $topaz = isset($status->topaz) ? $status->topaz : array();
+        foreach($topaz as $serial => &$protect) {
+            $protect->{'$timestamp'} = isset($status->widget_track->{$serial}->last_connection) ? $status->widget_track->{$serial}->last_connection : 0;
+        }
         return $status;
     }
 
@@ -1337,11 +1532,11 @@ class Nest
             throw new RuntimeException("Error: Response from request to $url is not valid JSON data. Response: " . str_replace(array("\n","\r"), '', $response), NESTAPI_ERROR_NOT_JSON_RESPONSE);
         }
 
-        if ($info['http_code'] == 400) {
+        if ($info['http_code'] >= 400) {
             if (!is_object($json)) {
-                throw new RuntimeException("Error: HTTP 400 from request to $url. Response: " . str_replace(array("\n","\r"), '', $response), NESTAPI_ERROR_API_OTHER_ERROR);
+                throw new RuntimeException("Error: HTTP {$info['http_code']} from request to $url. Response: " . str_replace(array("\n","\r"), '', $response), NESTAPI_ERROR_API_OTHER_ERROR);
             }
-            throw new RuntimeException("Error: HTTP 400 from request to $url. JSON error: $json->error - $json->error_description", NESTAPI_ERROR_API_JSON_ERROR);
+            throw new RuntimeException("Error: HTTP {$info['http_code']} from request to $url. JSON error: $json->error - $json->error_description", NESTAPI_ERROR_API_JSON_ERROR);
         }
 
         // No body returned; return a boolean value that confirms a 200 OK was returned.
