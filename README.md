@@ -22,6 +22,9 @@ Version info:
 - 2020-04-01 V1.10 added time-stamp to the output
 - 2020-05-06 V1.11 Changed dzvents-example, to avoid setpoint update after activating ECO-mode. \
                    You have to change this manually in Domoticz!!!
+- 2022-07-09 V1.12 Add comments for getting token \
+                   updated latest class-file from gboudreau
+
 
 
 
