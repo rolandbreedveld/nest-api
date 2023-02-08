@@ -151,6 +151,7 @@ My alarm works automatically: if no mobile-phone is at home, the Alarm system wi
 
 
 ======= Problem Solving ======
+
 Problems to get it working? Try the debug option, you can also run the some stuff manually: 
 - /home/pi/netst-api/get_nest.sh -d
 
