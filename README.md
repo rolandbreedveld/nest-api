@@ -142,6 +142,15 @@ Some people want a different location, you can change the location of these cach
 - sys_temp_dir = "/tmp" <<< this is the one
 - soap.wsdl_cache_dir="/tmp" <<< better change this one too
 
+
+If you use Domoticz also as Alarm-System, you can add the IDX of the Alarm-Switch to the config file.
+If this is present, this script will enable ECO and AWAY mode if the Alarm is on, and switch them off if the Alarm changes to off.
+My alarm works automatically: if no mobile-phone is at home, the Alarm system will be activated, en the Nest goes to ECO and AWAY.
+(Because kids always forget to lower the thermostat when they leave.)
+
+
+
+======= Problem Solving ======
 Problems to get it working? Try the debug option, you can also run the some stuff manually: 
 - /home/pi/netst-api/get_nest.sh -d
 
