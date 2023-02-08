@@ -24,6 +24,7 @@ Version info:
                    You have to change this manually in Domoticz!!!
 - 2022-07-09 V1.12 Add comment for getting token \
                    updated class-file from gboudreau
+- 2023-02-08 V1.13 Added Alarm function, if Alarm in Domoticz is On, ECO and Away mode will be enabled
 
 
 

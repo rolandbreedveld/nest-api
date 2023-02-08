@@ -35,6 +35,19 @@ function print_action ()
   echo "$(date "+%Y-%m-%d %H:%M") ${*}"
 }
 
+IDX=$(grep "^ALARM " nest_devices.cfg|awk '{print $NF}')
+if [ ! -z "${IDX}" ]
+then
+  print_debug "ALARM_IDX: ${IDX}"
+  if curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=devices&rid=${IDX}" 2>/dev/null|grep Status|grep Off >/dev/null 2>&1
+  then
+    export ALARM_STATE="Off"
+  else
+    export ALARM_STATE="On"
+  fi
+fi
+print_debug "ALARM_STATE: ${ALARM_STATE}"
+
 TARGET_SET=0
 php get_nest.php| while read LINE
 do
@@ -78,6 +91,14 @@ do
       else
         VALUE="Off"
       fi
+      if [ "${ALARM_STATE}" == "On" ]
+      then
+        VALUE="On"
+      fi
+      if [ "${ALARM_STATE}" == "Off" ]
+      then
+        VALUE="Off"
+      fi
       ;;
     '"eco_mode":')
       TYPE=ECOMODE
@@ -86,6 +107,14 @@ do
       then
         VALUE="On"
       else
+        VALUE="Off"
+      fi
+      if [ "${ALARM_STATE}" == "On" ]
+      then
+        VALUE="On"
+      fi
+      if [ "${ALARM_STATE}" == "Off" ]
+      then
         VALUE="Off"
       fi
       ;;
