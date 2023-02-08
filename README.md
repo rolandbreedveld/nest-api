@@ -24,6 +24,7 @@ Version info:
                    You have to change this manually in Domoticz!!!
 - 2022-07-09 V1.12 Add comments for getting token \
                    updated latest class-file from gboudreau
+- 2023-02-08 V1.13 Add Alarm IDX, this wille enable ECO and AWAY mode if Alarm system is on.
 
 
 
