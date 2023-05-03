@@ -25,7 +25,7 @@ Version info:
 - 2022-07-09 V1.12 Add comments for getting token \
                    updated latest class-file from gboudreau
 - 2023-02-08 V1.13 Add Alarm IDX, this wille enable ECO and AWAY mode if Alarm system is on.
-
+- 2023-05-03 V1.14 Changed procedure to get the token and cookie
 
 
 
@@ -48,20 +48,19 @@ if you dan't have git, install it first:
 copy nest.auth.php_example to nest.auth.php \
 and change the issue-token and cookie in nest.auth.php   \
 to get both values take these steps:   (thanks FilipDem for this info) \
+
 READ THESE STEPS CAREFULLY ! 
 - Open a Chrome browser tab in Incognito Mode (or clear your cache).
 - Open Developer Tools (View/Developer/Developer Tools).
 - Click on Network tab. Make sure Preserve Log is checked.
 
-- In the Filter box, enter issueToken
+- In the Filter box, enter: issueToken
 - Go to https://home.nest.com, and click Sign in with Google. Log into your account.
-- One network call (beginning with iframerpc) will appear in the Dev Tools window. Click on it.
+- One network call (beginning with iframerpc?action=issueToken) will appear in the Dev Tools window. Click on it.+
 - In the Headers tab, under General, copy the entire Request URL (beginning with https://accounts.google.com, ending with nest.com). This is your $issue_token.
-- When copy the token, select the entire string, and do not use the "copy-value" option in chrome, this will translate struff like %20 to a space and %3A to ":"
-
-- In the Filter box, enter oauth2/iframe
-- Several network calls will appear in the Dev Tools window. Click on the last iframe call.
 - In the Headers tab, under Request Headers (be shure it's the request header not the other ones!!), copy the entire cookie value (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your $cookies; make sure all of it is on a single line. \
+IMPORTANT: select de values with your mouse starting at the begin of the code, to the endo of the code, then click richt, and select "Copy"\
+DO NOT SELECT Copy-Value, and DO NOT selecting the string bij double-click: this won't work!!!\
 
 Be shure, the cookie and token values are placed between '' and the row ends with a ;
 
