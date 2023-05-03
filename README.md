@@ -60,7 +60,7 @@ READ THESE STEPS CAREFULLY !
 - In the Headers tab, under General, copy the entire Request URL (beginning with https://accounts.google.com, ending with nest.com). This is your $issue_token.
 - In the Headers tab, under Request Headers (be shure it's the request header not the other ones!!), copy the entire cookie value (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your $cookies; make sure all of it is on a single line. 
 
-IMPORTANT: select de values with your mouse starting at the begin of the code to the end of the code, then click richt, and select "Copy"
+IMPORTANT: select de values with your mouse starting at the begin of the code to the end of the code, then click richt, and select "Copy". \
 DO NOT SELECT Copy-Value, and DO NOT selecting the string bij double-click: these both won't work!!!
 
 Be shure, the cookie and token values are placed between '' and the row ends with a ;
