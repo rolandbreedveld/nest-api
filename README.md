@@ -61,7 +61,7 @@ to get both values take these steps:
 - In the Headers tab, under <b>Request Headers</b> (be shure it's the request header not the other ones!!), copy the entire <b>cookie value</b> (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your <b>$cookies</b>; make sure all of it is on one single line. 
 
 IMPORTANT: select de values with your mouse starting at the begin of the code to the end of the code, then click richt, and select "Copy". \
-DO NOT SELECT "Copy-Value", and DO NOT selecting the string bij double-click: these both won't work!!!
+DO NOT SELECT "Copy-Value", and DO NOT selecting the string bij double-click: these both won't work!!! \
 FINALY, Be shure the cookie and token values are placed between '  ' and the row ends with a ;
 
 Create in Domoticz virtual Devices:
