@@ -47,7 +47,7 @@ if you dan't have git, install it first:
 
 copy nest.auth.php_example to nest.auth.php \
 and change the issue-token and cookie in nest.auth.php   \
-to get both values take these steps: \
+to get both values take these steps: 
 
 <b>READ THESE STEPS CAREFULLY</b> ! 
 - Open a Chrome browser tab in Incognito Mode (or clear your cache).
