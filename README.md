@@ -55,15 +55,14 @@ to get both values take these steps: \
 - Click on Network tab. Make sure Preserve Log is checked.
 
 - In the Filter box, enter: issueToken
-- Go to https://home.nest.com, and click Sign in with Google. Log into your account.
-- One network call (beginning with iframerpc?action=issueToken) will appear in the Dev Tools window. Click on it.
-- In the Headers tab, under General, copy the entire Request URL (beginning with https://accounts.google.com, ending with nest.com). This is your $issue_token.
-- In the Headers tab, under Request Headers (be shure it's the request header not the other ones!!), copy the entire cookie value (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your $cookies; make sure all of it is on a single line. 
+- Go to https://home.nest.com, and click Sign in with Google.
+- A network call (beginning with iframerpc?action=issueToken) will appear in the Dev Tools window. Click on it.
+- In the Headers tab, under <b>General</b>, copy the entire Request URL (beginning with https://accounts.google.com, ending with nest.com). This is your <b>$issue_token</b>.
+- In the Headers tab, under <b>Request Headers</b> (be shure it's the request header not the other ones!!), copy the entire cookie value (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your <b>$cookies</b>; make sure all of it is on one single line. 
 
 IMPORTANT: select de values with your mouse starting at the begin of the code to the end of the code, then click richt, and select "Copy". \
-DO NOT SELECT Copy-Value, and DO NOT selecting the string bij double-click: these both won't work!!!
-
-Be shure, the cookie and token values are placed between '' and the row ends with a ;
+DO NOT SELECT "Copy-Value", and DO NOT selecting the string bij double-click: these both won't work!!!
+FINALY, Be shure the cookie and token values are placed between '  ' and the row ends with a ;
 
 Create in Domoticz virtual Devices:
 
