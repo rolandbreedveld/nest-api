@@ -57,7 +57,7 @@ to get both values take these steps:
 - In the Filter box, enter: issueToken
 - Go to https://home.nest.com, and click Sign in with Google.
 - A network call (beginning with iframerpc?action=issueToken) will appear in the Dev Tools window. Click on it.
-- In the Headers tab, under <b>General</b>, copy the entire <b>Request URL</b>. (beginning with https://accounts.google.com, ending with nest.com). This is your <b>$issue_token</b>.
+- In the Headers tab, under <b>General</b>, copy the entire <b>Request URL</b>. (beginning with "https://accounts.google.com", ending with "=true"). This is your <b>$issue_token</b>.
 - In the Headers tab, under <b>Request Headers</b> (be shure it's the request header not the other ones!!), copy the entire <b>cookie value</b> (include the whole string which is several lines long and has many field/value pairs - do not include the Cookie: prefix). This is your <b>$cookies</b>; make sure all of it is on one single line. 
 
 IMPORTANT: select de values with your mouse starting at the begin of the code to the end of the code, then click richt, and select "Copy". \
