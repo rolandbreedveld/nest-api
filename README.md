@@ -47,9 +47,9 @@ if you dan't have git, install it first:
 
 copy nest.auth.php_example to nest.auth.php \
 and change the issue-token and cookie in nest.auth.php   \
-to get both values take these steps:   (thanks FilipDem for this info) \
+to get both values take these steps: \
 
-READ THESE STEPS CAREFULLY ! 
+<b>READ THESE STEPS CAREFULLY</b> ! 
 - Open a Chrome browser tab in Incognito Mode (or clear your cache).
 - Open Developer Tools (View/Developer/Developer Tools).
 - Click on Network tab. Make sure Preserve Log is checked.
