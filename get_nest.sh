@@ -148,14 +148,14 @@ do
     fi
     if [ "${TYPE}" == "SETPOINT" ]
     then
-      CURRENT=$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=devices&rid=${IDX}" 2>/dev/null|grep '"SetPoint" : '|sed 's/\"//g;s/,$//'|awk '{print sprintf("%.1f",$3)}')
+      CURRENT=$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=getdevices&rid=${IDX}" 2>/dev/null|grep '"SetPoint" : '|sed 's/\"//g;s/,$//'|awk '{print sprintf("%.1f",$3)}')
       if [ "${CURRENT}" != "${VALUE}" ]
       then
         print_action "Update ${TYPE} to $VALUE"
         print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" 2>&1)"
       else
         # check last update, to avoid red sensor
-        LASTUPDATE=$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=devices&rid=${IDX}" 2>/dev/null|grep '"LastUpdate" :'|awk -F\" '{print $4}')
+        LASTUPDATE=$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=getdevices&rid=${IDX}" 2>/dev/null|grep '"LastUpdate" :'|awk -F\" '{print $4}')
         print_debug "vars: LASTUPDATE SETPOINT:${LASTUPDATE}"
         if [ "$(($(date '+%s') - $(date --date="${LASTUPDATE}" +%s)))" -gt "3600" ]
         then
@@ -166,7 +166,7 @@ do
     fi
     if [ "${VALUE}" == "On" ]
     then
-      if curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=devices&rid=${IDX}" 2>/dev/null|grep Status|grep Off >/dev/null 2>&1
+      if curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=getdevices&rid=${IDX}" 2>/dev/null|grep Status|grep Off >/dev/null 2>&1
       then
         print_action "Update ${TYPE} state to ${VALUE}"
         print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" 2>&1)"
@@ -174,7 +174,7 @@ do
     fi
     if [ "${VALUE}" == "Off" ]
     then
-      if curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=devices&rid=${IDX}" 2>/dev/null|grep Status|grep On >/dev/null 2>&1
+      if curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=getdevices&rid=${IDX}" 2>/dev/null|grep Status|grep On >/dev/null 2>&1
       then
         print_action "Update ${TYPE} state to ${VALUE}"
         print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=switchlight&idx=${IDX}&switchcmd=${VALUE}" 2>&1)"
