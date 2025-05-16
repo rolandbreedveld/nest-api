@@ -39,6 +39,7 @@ IDX=$(grep "^ALARM " nest_devices.cfg|awk '{print $NF}')
 if [ ! -z "${IDX}" ]
 then
   print_debug "ALARM_IDX: ${IDX}"
+  # if  [ "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=getdevices&rid=134" 2>/dev/null |jq -r '.result[].Status')" == "Off" ]
   if curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=getdevices&rid=${IDX}" 2>/dev/null|grep Status|grep Off >/dev/null 2>&1
   then
     export ALARM_STATE="Off"
@@ -148,11 +149,12 @@ do
     fi
     if [ "${TYPE}" == "SETPOINT" ]
     then
-      CURRENT=$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=getdevices&rid=${IDX}" 2>/dev/null|grep '"SetPoint" : '|sed 's/\"//g;s/,$//'|awk '{print sprintf("%.1f",$3)}')
+      CURRENT=$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=getdevices&rid=${IDX}" 2>/dev/null|grep '"SetPoint" : '|sed 's/\"//g;s/,$//'|awk '{print sprintf("%.1f",$3)}'|sed 's/.0$//')
+      VALUE=$(echo ${VALUE}|sed 's/.0$//')
       if [ "${CURRENT}" != "${VALUE}" ]
       then
         print_action "Update ${TYPE} to $VALUE"
-        print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" 2>&1)"
+        print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=setsetpoint&idx=${IDX}&setpoint=${VALUE}"  >/dev/null 2>&1)"
       else
         # check last update, to avoid red sensor
         LASTUPDATE=$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=getdevices&rid=${IDX}" 2>/dev/null|grep '"LastUpdate" :'|awk -F\" '{print $4}')
@@ -160,7 +162,7 @@ do
         if [ "$(($(date '+%s') - $(date --date="${LASTUPDATE}" +%s)))" -gt "3600" ]
         then
           print_action "Update ${TYPE} to $VALUE : LastUpdate older then 60 minutes "
-          print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=setused&idx=${IDX}&setpoint=${VALUE}&used=true" 2>&1)"
+          print_debug "$(curl -4 -X GET "http://${DOMOTICZ}/json.htm?type=command&param=setsetpoint&idx=${IDX}&setpoint=${VALUE}" >/dev/null 2>&1)"
         fi
       fi
     fi

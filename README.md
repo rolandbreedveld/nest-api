@@ -27,6 +27,7 @@ Version info:
 - 2023-02-08 V1.13 Add Alarm IDX, this wille enable ECO and AWAY mode if Alarm system is on.
 - 2023-05-03 V1.14 Changed procedure to get the token and cookie
 - 2023-12-28 V1.15 Domiticz API-call changed: type=divices, changed to type=command&param=getdevices
+- 2025-05-26 V1.16 API call changed for setpoint, failed to work after update to domoticz 2025.1
 
 
 
